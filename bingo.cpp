@@ -1,10 +1,10 @@
 #include <iostream>
 #include <vector>
-#include <deque>
-#include <algorithm>
+#include <deque> //Permite usar a estrutura deque (double-ended queue) 
+#include <algorithm> //find() random_shuffle()
 #include <cstdlib>
 #include <ctime>
-#include <iomanip>
+#include <iomanip> //Permite manipular formatação de saída setw()
 
 #ifdef _WIN32
     #include <windows.h>
@@ -71,9 +71,9 @@ public:
             int colunas[5] = {linha + 1, linha + 21, linha + 41, linha + 61, linha + 81};
             for (int c = 0; c < 5; c++) {
                 if (foiSorteado(colunas[c], sorteados)) {
-                    cout << VERDE << setw(3) << colunas[c] << RESET << "      ";
+                    cout << VERMELHO << setw(3) << colunas[c] << RESET << "      ";
                 } else {
-                    cout << BRANCO << setw(3) << colunas[c] << RESET << "      ";
+                    cout << VERDE << setw(3) << colunas[c] << RESET << "      ";
                 }
             }
             cout << "\n";
@@ -116,7 +116,7 @@ public:
         return cartela.obterLetraColuna(numero);
     }
 
-    void exibirInformacoes(int bolaAtual) {
+    void exibirInformacoes(int bolaAtual, const vector<int>& numerosSorteados) {
         limparEcra();
         exibirTitulo();
 
@@ -139,13 +139,15 @@ public:
             cout << "\n";
         }
 
-        cartela.exibir(todosSorteados);
-        cout << CIANO << "Total de numeros sorteados: " << ultimas5.size() << "/100" << RESET << "\n";
+        cartela.exibir(numerosSorteados);
+        cout << CIANO << "Total de numeros sorteados: " << numerosSorteados.size() << "/100" << RESET << "\n";
     }
 
     void jogarAutomatico() {
         cout << CIANO << "Modo Automatico ativado! Numeros a cada 2 segundos.\n" << RESET;
         SLEEP(2);
+
+        vector<int> numerosSorteados;
 
         for (size_t i = 0; i < todosSorteados.size(); i++) {
             int numero = todosSorteados[i];
@@ -153,7 +155,9 @@ public:
             ultimas5.push_back(numero);
             if (ultimas5.size() > 5) ultimas5.pop_front();
 
-            exibirInformacoes(numero);
+            numerosSorteados.push_back(numero); // adiciona à lista de sorteados
+
+            exibirInformacoes(numero, numerosSorteados);
             bolaAnterior = numero;
             SLEEP(2);
         }
@@ -165,6 +169,8 @@ public:
         cout << CIANO << "Modo Manual ativado! Prima Enter para sortear cada numero.\n" << RESET;
         SLEEP(1);
 
+        vector<int> numerosSorteados;
+
         for (size_t i = 0; i < todosSorteados.size(); i++) {
             cout << "\nPrima Enter para sortear o proximo numero...";
             cin.get();
@@ -174,7 +180,9 @@ public:
             ultimas5.push_back(numero);
             if (ultimas5.size() > 5) ultimas5.pop_front();
 
-            exibirInformacoes(numero);
+            numerosSorteados.push_back(numero); // adiciona à lista de sorteados
+
+            exibirInformacoes(numero, numerosSorteados);
             bolaAnterior = numero;
         }
 
